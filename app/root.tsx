@@ -5,6 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -43,6 +44,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const data = useLoaderData<typeof loader>();
+  const location = useLocation();
+  
+  // Don't show header on dashboard pages - they have their own layout
+  const isDashboardPage = location.pathname.startsWith('/dashboard') || 
+                          location.pathname.startsWith('/admin/') || 
+                          location.pathname.startsWith('/affiliate/') || 
+                          location.pathname.startsWith('/settings');
   
   return (
     <html lang="en" className="h-full">
@@ -55,7 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="h-full bg-gray-50">
-        <Header user={data?.user} />
+        {!isDashboardPage && <Header user={data?.user} />}
         {children}
         <script
           dangerouslySetInnerHTML={{
