@@ -4,43 +4,40 @@ import { createSupabaseServerClient } from "~/lib/supabase.server";
 export async function requireAuth(request: Request) {
   const { supabase } = createSupabaseServerClient(request);
   
-  const { data: { session }, error } = await supabase.auth.getSession();
+  const { data: { user }, error } = await supabase.auth.getUser();
   
-  if (error || !session) {
+  if (error || !user) {
     throw redirect('/login');
   }
   
-  const { data: profile, error: profileError } = await supabase
+  // Get user profile
+  const { data: profile } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .single();
   
-  if (profileError || !profile) {
-    throw redirect('/dashboard');
+  if (!profile) {
+    throw redirect('/onboarding');
   }
   
-  return {
-    user: session.user,
-    profile,
-    session
-  };
+  return { user, profile };
 }
 
-export async function getProfile(request: Request) {
+export async function getOptionalAuth(request: Request) {
   const { supabase } = createSupabaseServerClient(request);
   
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!session) {
-    return null;
+  if (!user) {
+    return { user: null, profile: null };
   }
   
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .single();
   
-  return profile;
+  return { user, profile };
 }
