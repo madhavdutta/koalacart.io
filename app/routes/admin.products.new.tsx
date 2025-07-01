@@ -8,7 +8,6 @@ import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
 export const meta: MetaFunction = () => {
   return [
@@ -25,6 +24,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
   
   return json({});
+}
+
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -50,11 +56,16 @@ export async function action({ request }: ActionFunctionArgs) {
   }
   
   try {
+    // Generate slug from name
+    const slug = generateSlug(name);
+    
+    // Use profile.id instead of user.id for admin_id
     const { data: product, error } = await supabase
       .from('products')
       .insert({
-        admin_id: user.id,
+        admin_id: profile.id, // Use profile.id instead of user.id
         name,
+        slug,
         description: description || null,
         product_type: productType,
         pricing_type: pricingType,
@@ -69,7 +80,7 @@ export async function action({ request }: ActionFunctionArgs) {
     
     if (error) {
       console.error('Error creating product:', error);
-      return json({ error: 'Failed to create product' }, { status: 400 });
+      return json({ error: 'Failed to create product: ' + error.message }, { status: 400 });
     }
     
     return redirect(`/admin/products/${product.id}/edit?created=true`);
