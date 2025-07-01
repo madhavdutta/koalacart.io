@@ -151,6 +151,7 @@ export interface Database {
           total_earnings: number
           total_clicks: number
           total_sales: number
+          notes: string | null
           is_active: boolean
           created_at: string
           updated_at: string
@@ -163,6 +164,7 @@ export interface Database {
           total_earnings?: number
           total_clicks?: number
           total_sales?: number
+          notes?: string | null
           is_active?: boolean
           created_at?: string
           updated_at?: string
@@ -175,6 +177,7 @@ export interface Database {
           total_earnings?: number
           total_clicks?: number
           total_sales?: number
+          notes?: string | null
           is_active?: boolean
           created_at?: string
           updated_at?: string
@@ -207,6 +210,50 @@ export interface Database {
           clicks?: number
           conversions?: number
           created_at?: string
+        }
+      }
+      payment_gateways: {
+        Row: {
+          id: string
+          user_id: string
+          gateway_type: 'stripe' | 'paypal' | 'square'
+          publishable_key: string | null
+          secret_key: string | null
+          client_id: string | null
+          client_secret: string | null
+          webhook_secret: string | null
+          mode: 'sandbox' | 'live'
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          gateway_type: 'stripe' | 'paypal' | 'square'
+          publishable_key?: string | null
+          secret_key?: string | null
+          client_id?: string | null
+          client_secret?: string | null
+          webhook_secret?: string | null
+          mode?: 'sandbox' | 'live'
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          gateway_type?: 'stripe' | 'paypal' | 'square'
+          publishable_key?: string | null
+          secret_key?: string | null
+          client_id?: string | null
+          client_secret?: string | null
+          webhook_secret?: string | null
+          mode?: 'sandbox' | 'live'
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
         }
       }
     }
