@@ -7,7 +7,7 @@ import { DashboardLayout } from "~/components/layout/dashboard-layout";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { ArrowLeft, Edit, Package, ExternalLink } from "lucide-react";
+import { ArrowLeft, Edit, Package, ExternalLink, Eye, ShoppingCart } from "lucide-react";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -19,7 +19,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { user, profile } = await requireAuth(request);
   
-  if (profile.role !== 'admin') {
+  if (profile.originalRole !== 'admin' && profile.role !== 'admin') {
     return redirect('/dashboard');
   }
   
@@ -63,13 +63,45 @@ export default function ProductView() {
               <p className="text-gray-600 mt-1">Product Details</p>
             </div>
           </div>
-          <Link to={`/admin/products/${product.id}/edit`}>
-            <Button className="bg-green-600 hover:bg-green-700">
-              <Edit className="w-4 h-4 mr-2" />
-              Edit Product
-            </Button>
-          </Link>
+          <div className="flex gap-3">
+            <Link to={`/checkout/${product.id}`} target="_blank">
+              <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+                <Eye className="w-4 h-4 mr-2" />
+                View Checkout
+              </Button>
+            </Link>
+            <Link to={`/products/${product.id}`} target="_blank">
+              <Button variant="outline" className="border-green-200 text-green-700 hover:bg-green-50">
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                View Product Page
+              </Button>
+            </Link>
+            <Link to={`/admin/products/${product.id}/edit`}>
+              <Button className="bg-green-600 hover:bg-green-700">
+                <Edit className="w-4 h-4 mr-2" />
+                Edit Product
+              </Button>
+            </Link>
+          </div>
         </div>
+
+        {/* Testing Notice */}
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Eye className="w-4 h-4 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-medium text-blue-900">Testing Your Product</p>
+                <p className="text-sm text-blue-700">
+                  Use the buttons above to test your product page and checkout flow. 
+                  Switch to different user roles in your dashboard to test different experiences.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">

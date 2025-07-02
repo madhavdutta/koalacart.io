@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { formatCurrency } from "~/lib/utils";
-import { ArrowLeft, ShoppingCart, Download, Package, Clock, User } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Download, Package, Clock, User, Users } from "lucide-react";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data?.product) {
@@ -46,11 +46,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function ProductDetail() {
   const { product } = useLoaderData<typeof loader>();
-  
-  const handlePurchase = () => {
-    // This will be implemented with Stripe checkout
-    alert('Checkout functionality will be implemented with Stripe integration');
-  };
   
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -132,28 +127,57 @@ export default function ProductDetail() {
               </div>
             </div>
             
-            {/* Purchase Button */}
-            <Card className="p-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900 mb-2">
-                  Ready to purchase?
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              {/* Purchase Button */}
+              <Card className="p-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900 mb-2">
+                    Ready to purchase?
+                  </div>
+                  <p className="text-gray-600 mb-6">
+                    Secure checkout powered by Stripe
+                  </p>
+                  <Link to={`/checkout/${product.id}`}>
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-lg py-6"
+                    >
+                      <ShoppingCart className="h-5 w-5 mr-2" />
+                      Buy Now - {formatCurrency(product.base_price)}
+                    </Button>
+                  </Link>
+                  <p className="text-sm text-gray-500 mt-4">
+                    30-day money-back guarantee
+                  </p>
                 </div>
-                <p className="text-gray-600 mb-6">
-                  Secure checkout powered by Stripe
-                </p>
-                <Button 
-                  onClick={handlePurchase}
-                  size="lg" 
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-lg py-6"
-                >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  Buy Now - {formatCurrency(product.base_price)}
-                </Button>
-                <p className="text-sm text-gray-500 mt-4">
-                  30-day money-back guarantee
-                </p>
-              </div>
-            </Card>
+              </Card>
+              
+              {/* Affiliate Button */}
+              <Card className="p-6 border-blue-200 bg-blue-50">
+                <div className="text-center">
+                  <div className="text-xl font-bold text-blue-900 mb-2">
+                    Want to earn commissions?
+                  </div>
+                  <p className="text-blue-700 mb-6">
+                    Promote this product and earn 15% commission on every sale
+                  </p>
+                  <Link to={`/affiliate/apply/${product.id}`}>
+                    <Button 
+                      variant="outline"
+                      size="lg" 
+                      className="w-full border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-lg py-6"
+                    >
+                      <Users className="h-5 w-5 mr-2" />
+                      Become an Affiliate
+                    </Button>
+                  </Link>
+                  <p className="text-sm text-blue-600 mt-4">
+                    Get your unique referral link and start earning today
+                  </p>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
         

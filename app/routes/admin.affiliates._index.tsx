@@ -25,11 +25,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   
   const { supabase } = createSupabaseServerClient(request);
   
+  // Fix the relationship by specifying which foreign key to use
   const { data: affiliates, error } = await supabase
     .from('affiliates')
     .select(`
       *,
-      profiles (
+      profiles!affiliates_profile_id_fkey (
         full_name,
         email,
         avatar_url
@@ -183,7 +184,7 @@ export default function AffiliatesIndex() {
                         </td>
                         <td className="py-3 px-4">
                           <span className="font-medium text-green-600">
-                            {affiliate.commission_rate}%
+                            {(affiliate.commission_rate * 100).toFixed(0)}%
                           </span>
                         </td>
                         <td className="py-3 px-4">

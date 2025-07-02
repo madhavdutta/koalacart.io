@@ -1,12 +1,15 @@
 import { Link, Form } from '@remix-run/react'
 import { Button } from '~/components/ui/button'
-import { ShoppingCart, User, LogOut, Menu, X, ChevronDown } from 'lucide-react'
+import { Badge } from '~/components/ui/badge'
+import { ShoppingCart, User, LogOut, Menu, X, ChevronDown, AlertTriangle } from 'lucide-react'
 import { useState } from 'react'
 
 interface HeaderProps {
   user?: {
     email: string
     role: 'admin' | 'affiliate' | 'buyer'
+    isImpersonating?: boolean
+    originalRole?: string
   } | null
 }
 
@@ -97,7 +100,15 @@ export function Header({ user }: HeaderProps) {
                   <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{user.email}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-900">{user.email}</span>
+                    {user.isImpersonating && (
+                      <Badge className="bg-orange-100 text-orange-800 text-xs">
+                        <AlertTriangle className="w-3 h-3 mr-1" />
+                        Testing as {user.role}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
                 <Form method="post" action="/logout">
                   <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
@@ -205,7 +216,17 @@ export function Header({ user }: HeaderProps) {
                       <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-white" />
                       </div>
-                      <span className="text-sm font-medium text-gray-900">{user.email}</span>
+                      <div>
+                        <span className="text-sm font-medium text-gray-900">{user.email}</span>
+                        {user.isImpersonating && (
+                          <div className="mt-1">
+                            <Badge className="bg-orange-100 text-orange-800 text-xs">
+                              <AlertTriangle className="w-3 h-3 mr-1" />
+                              Testing as {user.role}
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <Form method="post" action="/logout">
                       <Button variant="ghost" className="w-full justify-start text-gray-600 hover:text-gray-900">
